@@ -126,6 +126,32 @@ class GoCallInst(
 
 interface GoTerminatingInst : GoInst
 
+class GoEmptyInst : GoInst {
+    override val location: GoInstLocation
+        get() = TODO("Not yet implemented")
+    override val operands: List<GoExpr>
+        get() = TODO("Not yet implemented")
+
+    override fun <T> accept(visitor: GoInstVisitor<T>): T {
+        TODO("Not yet implemented")
+    }
+
+    override val parent: GoMethod
+        get() = TODO("Not yet implemented")
+
+    override fun hashCode(): Int {
+        return 31
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as GoEmptyInst
+        return true
+    }
+}
+
 class GoReturnInst(
     location: GoInstLocation,
     parent: GoMethod,
@@ -1096,7 +1122,7 @@ data class GoFunction(
         if (flowGraph == null) {
             flowGraph = GoBlockGraph(
                 blocks,
-                listOf<GoInst>() // TODO
+                blocks.flatMap { it.insts }
             ).graph
         }
         return flowGraph!!
@@ -1104,6 +1130,10 @@ data class GoFunction(
 
     override fun <T> accept(visitor: GoExprVisitor<T>): T {
         return visitor.visitGoFunction(this)
+    }
+
+    override fun hashCode(): Int {
+        return toString().hashCode()
     }
 }
 
