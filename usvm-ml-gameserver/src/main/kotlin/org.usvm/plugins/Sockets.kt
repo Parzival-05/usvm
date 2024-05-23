@@ -40,8 +40,9 @@ fun Application.configureSockets() {
                                     thisConnection.startGame {
                                         val explorationResult = randomExplorer(
                                             inputBody,
-                                            { thisConnection.getStep() },
-                                            { moveReward -> sendSerialized(moveReward.toRawOutputMessage()) })
+                                            thisConnection::getStep
+                                        )
+                                        { outputMessageBody -> sendSerialized(outputMessageBody.toRawOutputMessage()) }
                                         thisConnection.finishGame { sendSerialized(explorationResult.toRawOutputMessage()) }
                                     }
                                 }
